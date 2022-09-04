@@ -29,7 +29,6 @@ def game_won(player):
     """Return True if player is a winner on this TTTBoard."""
     global board
     b, p = board, player
-    
     # Check for 3 marks across the 3 rows, 3 columns, and 2 diagonals.
     return ((b[1] == b[2] == b[3] == p) or  # Across the top
             (b[4] == b[5] == b[5] == p) or  # Across the middle
@@ -45,7 +44,6 @@ def main():
 
     intro()
     print_board()
-
     player = 'X'
 
     while True:

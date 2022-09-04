@@ -1,7 +1,7 @@
 import sys, time
 from random import randint
 
-def information():
+def gameIntro():
     # print full hangman and game information at onset of game
     information = """
             HANGMAN! CAN YOUR BRAINS SAVE HIM? LET'S FIND OUT!
@@ -18,10 +18,8 @@ def information():
     print(space, layer_1, '\n', space, layer_2, '\n', space, layer_3)
 
 def hangman(word, name):
-    # print game information
-    information()
+    gameIntro()
 
-    # function prints parts of hangman if latter is wrong
     head = 'O'.center(3)
     edge = '___'
     rope = '|'.center(3)
@@ -31,58 +29,40 @@ def hangman(word, name):
 
     build = ""
     index = 0
-
-    # display the word prompt details and input interface to the player
     print(f"Word ({len(word)}) letters: %s" % ' '.join(bars))
 
     while True and index < len(man_parts):
-
         try:
-            # get input letter from the player
-            letter = input("Enter letter: ").upper()
+            letter = input("Enter letter (Use 'exit' to QUIT): ").upper()
+            if letter == 'EXIT': raise KeyboardInterrupt
             print(end="\n")
             if letter not in word:
-                # Add parts to build for printing
                 print(help[randint(0,len(help) - 1)])
                 build += man_parts[index]
                 print(build)
                 index += 1
-                # show the state of the word still
                 print('\n')
                 print(f"Word ({len(word)}) letters: %s" % ' '.join(bars).title())
             else:
-                # letter is in the word
                 display(bars, word, letter)
-
-                # check if the player has won
                 if has_won(bars, word):
                     print('\n')
                     print(f"CONGRATULATIONS {name}! YOU WON AND SAVED HANGMAN FROM DYING!")
                     break
-        except:
-            print("Oops! Something terrible happened to your computer. Jokes! Some error occurred!")
-            print("Quitting Hangman...")
-            time.sleep(5)
-            sys.exit()
-
-    if not has_won(bars, word):
-        print('\n')
-        print(f"YOU CAN'T SAVE ANYONE {name}! The Word was {word}.")
-
-    try:
-        wants_to_continue = input("Do you want to PLAY AGAIN? Type (y/n). Press Q to quit: ").lower()
-        if wants_to_continue == 'q' or wants_to_continue == 'n':
-            sys.exit()
-        elif wants_to_continue == 'y':
-            return True
-        else:
+        except KeyboardInterrupt:
             return False
-    except:
-        print("Wrong command. Quitting Hangman...")
-        sys.exit()
+        except:
+            print("\nOops! Something terrible happened to your computer. Jokes! Some error occurred!")
+            return False
+    print('\n')
+    print(f"YOU COULDN'T SAVE HANGMAN {name}! The Word was {word}.")
+    play_again = input("Do you want to PLAY AGAIN? Type (y/n): ").lower()
+    if play_again == 'y':
+        return True
+    return False
 
 def prompt():
-    # world countries stored alphabetically in a list
+    # World countries stored alphabetically
     countries = ['Afghanistan', 'Albania', 'Algeria', 'Andorra', 'Angola', 'Antigua & Deps', 'Argentina', 'Armenia',
          'Australia', 'Austria', 'Azerbaijan', 'Bahamas', 'Bahrain', 'Bangladesh', 'Barbados', 'Belarus', 'Belgium',
          'Belize', 'Benin', 'Bhutan', 'Bolivia', 'Bosnia Herzegovina', 'Botswana', 'Brazil', 'Brunei', 'Bulgaria',
@@ -113,35 +93,32 @@ def prompt():
 
 def display(bars, word, letter):
     word = list(word)
-
     for i in range(len(word)):
         if word[i] == letter:
             bars[i] = letter
-
-    # display the new state of the game
     print(f"Word ({len(word)}) letters: %s" % ' '.join(bars).title())
 
 def has_won(bars, word):
-    # convert word to list and compare with bars to find the winner
     if list(word) == bars:
         return True
-    else:
-        return False
+    return False
 
+# ************************************************************************ MAIN ******************************************************************
 
 if __name__ == '__main__':
     print('\n')
     print("Welcome to hangman WORLD COUNTRIES! LOADING...")
     print("By Emmanuel Chanda @2022.")
-    time.sleep(3)
+    time.sleep(1)
     name = input("Enter your name: ")
     print("The Game is Starting Now! Go Save Hangman...")
 
     while True:
         word = prompt()
-        # invoke main function hangman
         wants_to_continue = hangman(word, name)
         if not wants_to_continue:
             break
+    print("\nThanks for playing!")
     print("Quiting Hangman...")
     time.sleep(3)
+    sys.exit()
